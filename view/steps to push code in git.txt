@@ -1,0 +1,9 @@
+touch .gitignore
+git init
+git config --global user.name Pratik
+git config --global user.email guptapratik022@gmail.com
+git add .
+git commit -m "first commit"
+it branch -M main
+git remote add origin git@github.com:Pratikgupta022/ecommerce_clothingStore.git
+git push -u origin main
