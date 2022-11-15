@@ -12,13 +12,14 @@ if($action == 'register'){
 elseif ($action == 'login'){
     $controller->loginUser();
 }
+elseif ($action == 'index'){
+    $controller->indexPage();
+}
 elseif ($action == 'admin'){
-    if (isset($_GET['sort'])){
-        $controller->adminPage($_GET['sort']);
-    }
-    else{
-        $controller->adminPage(0);
-    }
+    $data['sort'] = isset($_GET['sort']) ? $_GET['sort'] : 0;
+    $data['detailsPerPage'] = isset($_GET['detailsPerPage']) ? $_GET['detailsPerPage'] : 5;
+    $controller->adminPage($data);
+//    $controller->adminPage($_GET['sort'] ?? 0,$_GET['rowsNo'] ?? 5);
 }
 elseif ($action == 'registerEmployee'){
     $controller->registerEmployee();
@@ -31,13 +32,9 @@ elseif ($action == 'edituser') {
         $controller->updateEmp($_SESSION['editId']);
     }
 }
-elseif ($action == 'deleteuser') {
-    $controller->deleteUser($_GET['id']);
+elseif ($action == 'deleteEmp') {
+    $controller->deleteUser();
 }
 else {
-//    if (isset($_SESSION['loggedInUser']['type'])){
-//        header("Location: http://localhost/ClothingStore/index.php?action=404");
-//    }else{
     $controller->loginPage();
-//    }
 }

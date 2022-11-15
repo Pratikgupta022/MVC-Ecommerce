@@ -75,18 +75,16 @@ class Model extends Config {
         }
     }
 
-    function allUsersData($sort){
+    function allUsersData($sort,$rowsNo){
         if ($sort=='1'){
-            $sql = "SELECT * FROM employee ORDER BY created_at ASC limit 0,3 ";
+            $sql = "SELECT * FROM employee ORDER BY created_at ASC limit 0,$rowsNo ";
         }
         elseif ($sort=='0'){
-            $sql = "SELECT * FROM employee ORDER BY created_at DESC limit 0,3 ";
+            $sql = "SELECT * FROM employee ORDER BY created_at DESC limit 0,$rowsNo ";
         }
         else{
-            $sql = "SELECT * FROM employee ORDER BY $sort ASC  limit 0,3";
-//            echo $sql; die;
+            $sql = "SELECT * FROM employee ORDER BY $sort ASC  limit 0,$rowsNo";
         }
-//        return $sql;die;
         $res = $this->dbconect()->query($sql);
         $data=array();
         if (mysqli_num_rows($res)>0){

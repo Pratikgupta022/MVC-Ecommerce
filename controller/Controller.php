@@ -92,15 +92,48 @@ class Controller
         }
     }
 
-    function adminPage($sort)
+    function adminPage($data)
     {
-        $data = $this->model->allUsersData($sort);
+        $detailsPerPage= $data['detailsPerPage'];
+        $sort= $data['sort'];
+        $data = $this->model->allUsersData($sort,$detailsPerPage);
+        if (self::isAjax()){
+                $count = 1;
+                foreach ($data as $row){
+                    $data[$count]="<tr>
+                        <th scope='row'><?php echo $count; ?></th>
+                        <td style='text-transform: capitalize'>". $row['fname']." ".$row['lname']." ?></td>
+                        <td>". $row['dob'] ."</td>
+                        <td>".$row['gender'] ."</td>
+                        <td>".$row['email'] ."</td>
+                        <td><?php echo $row['skills'] ?></td>
+                        <td><img src='view/images/<?php echo $row['photo'] ?>' height='40px' width='50px' alt='sort icon'></td>
+                        <td><a href='http://localhost/Test/index.php?action=edituser&id=<?php echo $row['id'] ?>' class='btn btn-sm btn-primary'>Edit</a></td>
+<!--                        <td><a href='http://localhost/Test/index.php?action=deleteuser&id=--><?php //echo $row['id'] ?><!--' class='btn btn-sm btn-danger'>Delete</a></td>-->
+                        <td>
+                            <form action='http://localhost/Test/index.php?action=deleteEmp' method='post'>
+                                <input type='hidden' name='delId' value='<?php echo $row['id'] ?>'>
+                                <input type='hidden' name='delImg' value='<?php echo $row['photo'] ?>'>
+                                <input type='submit' value='Delete' class='btn btn-sm btn-danger'>
+                            </form>
+                        </td>
+                    </tr>";
+                    $count++;
+                }
+            echo json_encode($data);
+            die;
+        }
         include "view/admin/index.php";
     }
 
-    function deleteUser($editid)
+    function indexPage(){
+        include "view/index.php";
+    }
+
+    function deleteUser()
     {
-        $this->model->deleteUser($editid);
+        unlink("view/images/".$_POST['delImg']);
+        $this->model->deleteUser($_POST['delId']);
     }
 
     function registerEmployee()
@@ -176,7 +209,9 @@ class Controller
 
     function updateEmp($editid)
     {
+
         if (isset($_POST['fname'])) {
+            print_r($_POST); die;
             $fname = $_POST['fname'];
             $lname = $_POST['lname'];
             $dob = $_POST['dob'];
@@ -204,6 +239,14 @@ class Controller
             $data = $this->model->getDataById($editid);
             include "view/admin/updateEmp.php";
         }
+    }
+
+    // ** Util functions **
+    public static function isAjax() {
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            return true;
+        }
+        return false;
     }
 
 }
